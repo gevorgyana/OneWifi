@@ -451,6 +451,126 @@ WiFi_GetParamBoolValue
     return FALSE;
 }
 
+/***********************************************************************
+
+ APIs for Object:
+
+    Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.
+    *  MLO_Radio_GetEntryCount
+    *  MLO_Radio_GetEntry
+
+***********************************************************************/
+ULONG
+MLO_Radio_GetEntryCount
+    (
+        ANSC_HANDLE                 hInsContext
+    )
+{
+    UNREFERENCED_PARAMETER(hInsContext);
+    wifi_util_dbg_print(WIFI_DMCLI,"%s:%d: Number of radio:%d\n",__func__, __LINE__, get_num_radio_dml());
+    return get_num_radio_dml();
+}
+
+ANSC_HANDLE
+MLO_Radio_GetEntry
+    (
+        ANSC_HANDLE                 hInsContext,
+        ULONG                       nIndex,
+        ULONG*                      pInsNumber
+    )
+{
+    UNREFERENCED_PARAMETER(hInsContext);
+
+    wifi_util_dbg_print(WIFI_DMCLI,"%s:%d: nIndex:%ld\n",__func__, __LINE__, nIndex);
+    if ( nIndex < (UINT)get_num_radio_dml() )
+    {
+        *pInsNumber = nIndex + 1;
+        g_radio_instance_num = nIndex + 1;
+        wifi_util_dbg_print(WIFI_DMCLI,"%s:%d: g_radio_instance_num:%d\n",__func__, __LINE__, g_radio_instance_num);
+        last_radio_change = AnscGetTickInSeconds();
+
+        return (ANSC_HANDLE)(nIndex + 1);
+    }
+
+    return NULL;
+}
+
+
+/***********************************************************************
+
+ APIs for Object:
+
+    Device.WiFi.DataElements.Network.Device.Radio.{i}.Capabilities.WiFi7APRole.
+
+    *  WiFi7APRole_GetParamBoolValue
+
+***********************************************************************/
+/**********************************************************************  
+
+    caller:     owner of this object 
+
+    prototype: 
+
+        BOOL
+        WiFi7APRole_GetParamBoolValue
+            (
+                ANSC_HANDLE                 hInsContext,
+                char*                       ParamName,
+                BOOL*                       pBool
+            );
+
+    description:
+
+        This function is called to retrieve Boolean parameter value; 
+
+    argument:   ANSC_HANDLE                 hInsContext,
+                The instance handle;
+
+                char*                       ParamName,
+ 
+                The parameter name;
+
+                BOOL*                       pBool
+                The buffer of returned boolean value;
+
+    return:     TRUE if succeeded.
+
+**********************************************************************/
+BOOL
+WiFi7APRole_GetParamBoolValue
+    (
+        ANSC_HANDLE                 hInsContext,
+        char*                       ParamName,
+        BOOL*                       pBool
+    )
+{
+    UNREFERENCED_PARAMETER(hInsContext);
+    if (AnscEqualString(ParamName, "EMLMRSupport", TRUE))
+    {
+        /* always return false when get */
+        *pBool = FALSE;
+        return TRUE;
+    }
+    if (AnscEqualString(ParamName, "EMLSRSupport", TRUE))
+    {
+        /* always return false when get */
+        *pBool = FALSE;
+        return TRUE;
+    }
+    if (AnscEqualString(ParamName, "STRSupport", TRUE))
+    {
+        /* always return false when get */
+        *pBool = FALSE;
+        return TRUE;
+    }
+    if (AnscEqualString(ParamName, "NSTRSupport", TRUE))
+    {
+	    return TRUE;
+    }
+
+    return FALSE;
+}
+
 /**********************************************************************  
 
     caller:     owner of this object 
