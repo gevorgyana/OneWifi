@@ -265,6 +265,10 @@ WiFi_GetParamBoolValue
     }
     if (AnscEqualString(ParamName, "ApplyAccessPointSettings", TRUE))
     {
+          /* FIXME remove this later - test purposes only */
+      char buf[256];
+      platform_hal_GetSoftwareVersion(buf, 1000);
+      wifi_util_debug_print(WIFI_CTRL, "%s\n", buf);
         /* always return false when get */
         *pBool = FALSE;
         return TRUE;
