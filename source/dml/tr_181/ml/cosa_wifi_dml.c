@@ -1197,6 +1197,7 @@ STAMLD_GetParamStringValue
 
     *  Device_GetEntryCount
     *  Device_GetEntry
+    *  Device_GetParamStringValue
 
 ***********************************************************************/
 /**********************************************************************
@@ -1275,6 +1276,93 @@ Device_GetEntry(ANSC_HANDLE hInsContext, ULONG nIndex, ULONG *pInsNumber)
 
     *pInsNumber = nIndex + 1;
     return (ANSC_HANDLE) (*pInsNumber);
+}
+
+/**********************************************************************
+
+    caller:     owner of this object
+
+    prototype:
+
+        ANSC_HANDLE
+        Device_GetParamStringValue
+            (
+                ANSC_HANDLE                 hInsContext,
+                char*                       ParamName,
+                char*                       pValue,
+                ULONG*                      pUlSize
+            );
+    description:
+
+        This function is called to retrieve string parameter value;
+
+    argument:   ANSC_HANDLE                 hInsContext,
+                The instance handle;
+
+                char*                       ParamName,
+                The parameter name;
+
+                char*                       pValue,
+                The string value buffer;
+
+                ULONG*                      pUlSize
+                The buffer of length of string value;
+                Usually size of 1023 will be used.
+                If it's not big enough, put required size here and return 1;
+
+    return:     0 if succeeded;
+                1 if short of buffer size; (*pUlSize = required size)
+                -1 if not supported.
+**********************************************************************/
+ULONG
+Device_GetParamStringValue
+    (
+        ANSC_HANDLE                 hInsContext,
+        char*                       ParamName,
+        char*                       pValue,
+        ULONG*                      pUlSize
+    )
+{
+    UNREFERENCED_PARAMETER(hInsContext);
+    if (!ParamName || !pValue || !pUlSize || *pUlSize < 1)
+    {
+        wifi_util_error_print(WIFI_DMCLI, "%s:%d Device_GetParamStringValue failed \n", __func__, __LINE__);
+        return -1;
+    }
+
+    if (AnscEqualString(ParamName, "SoftwareVersion", TRUE ))
+    {
+        char buf[256] = {0};
+        if (platform_hal_GetFirmwareName(buf, 256) != RETURN_OK) {
+            return -1;
+        }
+
+        if (AnscSizeOfString(buf) + 1 < *pUlSize) {
+            AnscCopyString(pValue,buf);
+        } else {
+            return 1;
+        }
+
+        return 0;
+    }
+
+    if (AnscEqualString(ParamName, "SerialNumber", TRUE ))
+    {
+        char buf[256] = {0};
+        if (platform_hal_GetSerialNumber(buf, 256) != RETURN_OK) {
+            return -1;
+        }
+
+        if (AnscSizeOfString(buf) + 1 < *pUlSize) {
+            AnscCopyString(pValue,buf);
+        } else {
+            return 1;
+        }
+
+        return 0;
+    }
+
+    return -1;
 }
 
 /***********************************************************************

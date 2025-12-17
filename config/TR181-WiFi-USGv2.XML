@@ -382,6 +382,7 @@
                             <functions>
                                 <func_GetEntryCount>Device_GetEntryCount</func_GetEntryCount>
                                 <func_GetEntry>Device_GetEntry</func_GetEntry>
+                                <func_GetParamStringValue>Device_GetParamStringValue</func_GetParamStringValue>
                             </functions>
                             <parameters>
                                     <parameter>
@@ -393,6 +394,16 @@
                                         <name>APMLDNumberOfEntries</name>
                                         <type>unsignedInt</type>
                                         <syntax>uint32</syntax>
+                                    </parameter>
+                                    <parameter>
+                                        <name>SoftwareVersion</name>
+                                        <type>string</type>
+                                        <syntax>string</syntax>
+                                    </parameter>
+                                    <parameter>
+                                        <name>SerialNumber</name>
+                                        <type>string</type>
+                                        <syntax>string</syntax>
                                     </parameter>
                             </parameters>
                                <objects>
